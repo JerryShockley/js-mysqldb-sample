@@ -8,7 +8,7 @@ const con = mysql.createConnection({
   database: 'db1'
 })
 
-var createPeopleTableSQL = `CREATE TABLE IF NOT EXISTS People (
+let createPeopleTableSQL = `CREATE TABLE IF NOT EXISTS People (
                           id int(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                           firstname VARCHAR(30) NOT NULL,
                           lastname VARCHAR(50) NOT NULL,
@@ -16,7 +16,7 @@ var createPeopleTableSQL = `CREATE TABLE IF NOT EXISTS People (
                           gender  VARCHAR(15) NOT NULL,
                           age int(3) UNSIGNED)`
 
-var insertPeopleDataSQL = `INSERT INTO People (
+let insertPeopleDataSQL = `INSERT INTO People (
                               firstname,
                               lastname,
                               email,
@@ -41,7 +41,7 @@ con.connect((err) => {
 
 
 function fetchRowData() {
-  var data = [
+  let data = [
     ['Joe', 'Samuels', 'joes@msn.com', 'male', 33],
     ['Julie', 'Blankenship', 'charmer@gmail.com', 'female', 22],
     ['Sam', 'Snodgrass', 'ssgrass@youtube.com', 'male', 53 ],
