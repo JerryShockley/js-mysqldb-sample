@@ -15,3 +15,5 @@ tags
 *.sw[nop]
 .bundle
 /bower_components/
+roles/
+package-lock.json
