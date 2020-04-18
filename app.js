@@ -1,44 +1,45 @@
-const mysql = require('mysql')
+const mysql = require('mysql2/promise')
 
-const con = mysql.createConnection({
+const dbConfig = {
   host: '192.168.5.99',
   port: '3306',
   user: 'dbuser',
   password: 'secret',
   database: 'db1'
-})
+}
+
+async function main() {
+  con = await mysql.createConnection( dbConfig )
+  console.log(`Successfully connected to ${dbConfig.database} ` +
+              `database as '${dbConfig.user}'`)
+  result = await con.query(createPeopleTableSQL)
+  console.log(`Successfully created 'People' Table if it didn't already exist`)
+
+  const [rows, fields] = await con.query(insertPeopleDataSQL, [fetchRowData()])
+  console.log(`Inserted ${rows.affectedRows} +  records.\n`)
+  console.log( fetchRowData() )
+
+  await con.end()
+  console.log( "Closed DB connection" )
+  return
+}
 
 let createPeopleTableSQL = `CREATE TABLE IF NOT EXISTS People (
-                          id int(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-                          firstname VARCHAR(30) NOT NULL,
-                          lastname VARCHAR(50) NOT NULL,
-                          email  VARCHAR(70) NOT NULL,
-                          gender  VARCHAR(15) NOT NULL,
-                          age int(3) UNSIGNED)`
+                              id int(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                              firstname VARCHAR(30) NOT NULL,
+                              lastname VARCHAR(50) NOT NULL,
+                              email  VARCHAR(70) NOT NULL,
+                              gender  VARCHAR(15) NOT NULL,
+                              age int(3) UNSIGNED)`
+
 
 let insertPeopleDataSQL = `INSERT INTO People (
-                              firstname,
-                              lastname,
-                              email,
-                              gender,
-                              age)
+                            firstname,
+                            lastname,
+                            email,
+                            gender,
+                            age)
                           VALUES ?`
-con.connect((err) => {
-  if (err) throw err
-  console.log('Connected to MySQL db1!')
-
-  con.query(createPeopleTableSQL, (err, result) => {
-    if (err) throw err
-    console.log("Successfully created 'People' Table")
-  })
-
-  con.query(insertPeopleDataSQL, [fetchRowData()], (err, result) => {
-    if (err) throw err
-    console.log("Inserted " + result.affectedRows + " records.")
-  })
-})
-
-
 
 function fetchRowData() {
   let data = [
@@ -52,3 +53,4 @@ function fetchRowData() {
   return data
 }
 
+main()
